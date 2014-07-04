@@ -24,12 +24,11 @@ string makeUnderscores(string input)
         char c = input[i];
         if (c >= 'A' && c <= 'Z')
         {
-            output += "_ ";
+            output += ".";
         }
         else
         {
             output += c;
-            output += ' ';
         }
     }
 
