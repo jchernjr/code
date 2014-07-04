@@ -35,10 +35,40 @@ string makeUnderscores(string input)
     return output;
 }
 
+/*
+ * Returns whether the secret string contains the guessed char.
+ */
+bool checkGuess(string secret, char guess)
+{
+    return secret.find(guess) != string::npos;
+}
+
 void playGame(string secret)
 {
     string progress = makeUnderscores(secret);
     cout << progress << endl;
+
+    char guess;
+    cout << "Guess a letter: ";
+    cin >> guess;
+    string guessStr = "" + guess;
+
+    if (checkGuess(secret, guess))
+    {
+        // replace corresponding spaces in 'progress' string
+        for (unsigned int i = 0; i < secret.length(); i++)
+        {
+            if (guess == secret[i])
+            {
+                progress = progress.substr(0, i) + guess + progress.substr(i+1);
+            }
+        }
+        cout << progress << endl;
+    }
+    else
+    {
+        cout << "You only get one wrong guess, so you lose." << endl;
+    }
 }
 
 int main()
