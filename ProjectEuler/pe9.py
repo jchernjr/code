@@ -4,13 +4,6 @@
 def isPythagTriplet(a, b, c):
   return (a*a + b*b == c*c)
 
-def makeSquares(k1, k2):
-  """
-  Return a set of square numbers, [k1^2, ... , k2^2].
-  I use a set instead of a list, so that it's easy to check if a number is a square in O(1) time.
-  """
-  return set([k*k for k in xrange(k1, k2 + 1)])
-
 def main():
   TARGET_SUM = 1000
 
