@@ -24,7 +24,13 @@ def getPrimesUpTo(n):
 def findPrimeSumOfRunLength(primesList, primeSet, runLength):
     """Makes sums of consecutive prime numbers from the `primeslist`,
     by summing exactly `runLength` consecutive numbers, and returns info about
-    the first one it finds, (sum, [list of addends])."""
+    the first one it finds, in the form (sum, [list of addends]).
+    If none was found, returns None.
+
+    Note that `primeSet` must include primes at least as large as the largest sum
+    from the `primeList`, or else, there's no way to tell whether those larger sums
+    are primes.
+    """
     numbers = primesList
     for i in xrange(len(numbers) - runLength + 1):
         thisSlice = numbers[i : i+runLength]
@@ -32,7 +38,29 @@ def findPrimeSumOfRunLength(primesList, primeSet, runLength):
 
         if thisSum in primeSet:
             return thisSum, thisSlice
+    return None
 
+def findLongestRunLength(primesList, primeSet):
+    longestRun = 0
+    longestAnswer = (0, [])
+
+    for runLength in xrange(1, len(primesList) + 1):
+        answer = findPrimeSumOfRunLength(primesList, primeSet, runLength)
+        if answer:
+            longestRun = runLength
+            longestAnswer = answer
+            print "Longest run so far: " + str(longestRun) + \
+                " sum=" + str(longestAnswer[0]) + \
+                ", starting at " + str(longestAnswer[1][0])
+
+    return longestAnswer
+
+
+def doProblem():
+    N = 1000000
+    primesList = getPrimesUpTo(N)
+    primeSet = set(primesList)
+    findLongestRunLength(primesList, primeSet)
 
 
 import time
