@@ -10,7 +10,7 @@ def buildSieve(n):
     sieve[0] = sieve[1] = False # 0 and 1 aren't primes
 
     # For every number, k, in the range, mark 2k, 3k, 4k, ... as non-primes
-    for k in xrange(2, int(math.sqrt(n))):
+    for k in xrange(2, int(math.sqrt(n)) + 1):
         for i in xrange(2*k, n, k):
             sieve[i] = False
 
