@@ -32,3 +32,14 @@ def findPrimeSumOfRunLength(primes, runLength):
 
         if thisSum in primes:
             return thisSum, thisSlice
+
+
+
+import time
+def runtimer(fn, args, nIterations=1):
+    start = time.clock()
+    for i in xrange(nIterations):
+        fn(*args)
+    finish = time.clock()
+    print "Time=" + str(finish-start) + ", for Iterations=" + str(nIterations)
+
