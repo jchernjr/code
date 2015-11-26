@@ -66,9 +66,8 @@ def findLongestRunLength(primesList, primeSet):
     return longestAnswer
 
 
-def doProblem():
-    N = 1000000
-    primesList = getPrimesUpTo(N)
+def doProblem(n=1000000):
+    primesList = getPrimesUpTo(n)
     primeSet = set(primesList)
     findLongestRunLength(primesList, primeSet)
 
