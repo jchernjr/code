@@ -20,3 +20,21 @@ def buildSieve(n):
 def getPrimesUpTo(n):
     return [i for (i, b) in enumerate(buildSieve(n)) if b]
 
+
+def findBiggestPrimeSum(primes, runLength):
+    """Makes sums of consecutive prime numbers from the `primes` list,
+    by summing exactly `runLength` consecutive numbers, and returns the biggest prime found."""
+    biggestSoFar = 0
+    contributingNumbers = []
+
+    numbers = primes
+    for i in xrange(len(numbers) - runLength + 1):
+        thisSlice = numbers[i : i+runLength]
+        thisSum = sum(thisSlice)
+
+        if thisSum in primes and thisSum > biggestSoFar:
+            biggestSoFar = thisSum
+            contributingNumbers = thisSlice
+
+    return biggestSoFar, contributingNumbers
+
