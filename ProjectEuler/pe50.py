@@ -21,16 +21,16 @@ def getPrimesUpTo(n):
     return [i for (i, b) in enumerate(buildSieve(n)) if b]
 
 
-def findPrimeSumOfRunLength(primes, runLength):
-    """Makes sums of consecutive prime numbers from the `primes` list,
+def findPrimeSumOfRunLength(primesList, primeSet, runLength):
+    """Makes sums of consecutive prime numbers from the `primeslist`,
     by summing exactly `runLength` consecutive numbers, and returns info about
     the first one it finds, (sum, [list of addends])."""
-    numbers = primes
+    numbers = primesList
     for i in xrange(len(numbers) - runLength + 1):
         thisSlice = numbers[i : i+runLength]
         thisSum = sum(thisSlice)
 
-        if thisSum in primes:
+        if thisSum in primeSet:
             return thisSum, thisSlice
 
 
