@@ -27,17 +27,27 @@ def findPrimeSumOfRunLength(primesList, primeSet, runLength):
     the first one it finds, in the form (sum, [list of addends]).
     If none was found, returns None.
 
+    For full correctness:
     Note that `primeSet` must include primes at least as large as the largest sum
     from the `primeList`, or else, there's no way to tell whether those larger sums
     are primes.
+
+    However, for this problem:
+    If we encounter a sum that is larger than the largest element in primesList,
+    we can quit early.
     """
     numbers = primesList
+    highestPrime = primesList[-1] # assumed to be in ascending order
+
     for i in xrange(len(numbers) - runLength + 1):
         thisSlice = numbers[i : i+runLength]
         thisSum = sum(thisSlice)
 
         if thisSum in primeSet:
             return thisSum, thisSlice
+        elif thisSum > highestPrime:
+            break
+
     return None
 
 def findLongestRunLength(primesList, primeSet):
