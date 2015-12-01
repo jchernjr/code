@@ -22,20 +22,24 @@ def trace(m):
     return a + d
 
 # We'll start from N = 1 and build upwards.
-# At each N, we try to increase the components of all 2x2 matrices M=(a,b,c,d)
-# until they would cause the trace of the squared matrices M*M to reach or exceed N.
-# We'll keep track of all the squares from this round, so that if any can be
-# constructed from more than 1 unique M*M, we'll find them.
-
-def searchNextRound(n, prevFrontier):
-    """Searches for the next set of squared matrices with trace < N,
-    that have not been found already.
-
-    prevFrontier: the set of input matrices checked in the last round, N-1.
-    For the first round, N = 1, this should be a set containing a single 2x2 zero matrix.
-    """
-    currFrontier = set()
-
+# At each trace of N, we take all the input matrices that yielded squares of one lesser trace (N-1)
+# and increase each of the components of those matrices (making "child" matrices) and see what squares we get.
+# Some of the squares may have trace greater than N (possibly much greater), but that's ok;
+# we'll keep track of them for future use, i.e. (1) in case any of them can be made by squaring
+# a different input matrix in the future, we'll know, and (2) to keep track of the input matrices that yielded
+# square matrices of each trace.
+#
+# The key to this approach is that we'll cover everything eventually, without missing any gaps,
+# because we always go to "bigger" and "bigger" matrices (higher valued elements),
+# and because the trace of their squares never decrease:
+# A 2x2 matrix M=(a,b,c,d) has trace(M) = (a^2 + bc) + (bc + d^2), so an increase in any element increases the trace.
+#
+# We'll keep track of all the squared matrices from this round, so that if we eventually
+# find that any of them can be constructed from more than 1 unique input, we'll detect them.
+#
+# After we utilize the info from trace N-1 to generate the next set of child matrices from it,
+# we can delete the info for trace N-1, because everything we generated from it will necessarily
+# have a higher trace... nothing will ever come back to "fill in" a lower trace.
 
 # Data structure: keep track of all the square matrices we've found so far, organized by trace.
 # I.e. for each trace = k, we'll have a set of matrices with trace(M) = k.
