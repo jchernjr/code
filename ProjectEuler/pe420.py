@@ -47,11 +47,22 @@ def trace(m):
 # Each matrix M should also remember which inputs made it, so each matrix will be associated with a list.
 # 
 # Thus, this will be a Dict[trace] --> Dict[Squared Matrix M] --> set of input Matrix/Matrices
-def searchOneRound(n, history):
-    # All input matrices are captured in this history for now.
+def generateOneRound(n, history):
+    """Generates square matrices of level n or higher (i.e. trace >= n) by taking
+    the input matrices of level n-1, incrementing them to make "child matrices",
+    and then squaring each of those to make the new "square matrices".
+
+    The new square matrices may not all be in the same level; in fact, they will probably
+    not even be in level n; all we know is that they will be in some higher level than n-1
+    because when we increment any element of the input matrix, the trace necessarily increases.
+
+    By the time this round (and all previous rounds) are over, we are guaranteed to have generated
+    every square matrix that belongs to level n.
+    """
     # Find the input matrices that created outputs at n-1.
     # Increment those matrices' elements, make squares from them, and add to the history.
     lastLevelResults = history[n-1]
+    print "Last level results (level " + str(n-1) + "): " + str(lastLevelResults)
 
     def listExtractor(accum, nextListOfInputs):
         accum.extend(nextListOfInputs)
@@ -75,19 +86,38 @@ def searchOneRound(n, history):
             # Then put it in the history (guarantees that every child matrix is captured somewhere)
             if tr not in history:
                 history[tr] = defaultdict(set)
-            history[tr][m].append(childMatrix)
+            history[tr][m].add(childMatrix)
 
 def initialHistory():
     # Map of trace 0 to the 0-squared matrix and its input.
     zero = (0,0,0,0)
     history = defaultdict(dict)
-    history[0] = {zero: [zero]}
+    history[0] = {zero: set([zero])}
     return history
 
 
-def searchUpToN(n):
+def countDoubleSquares(n, history):
+    """Sees how many matrices at level n (trace = n) are formed by multiple unique squares.
+    Should check this after generating matrices for level n, above."""
+    count = 0
+
+    thisLevelResults = history[n]
+    for (square, inputSet) in thisLevelResults.items():
+        if len(inputSet) >= 2:
+            count += 1
+
+            print "Matrix " + str(square) + " can be formed by: "
+            for inputMatrix in inputSet:
+                print "   " + str(inputMatrix) + "^2"
+
+    return count
+
+
+def searchUpToN(N):
     history = initialHistory()
-    for i in xrange(1, n+1):
-        searchOneRound(i, history)
+    for n in xrange(1, N+1):
+        generateOneRound(n, history)
+        countDoubleSquares(n, history)
+        #del history[n-1]
 
     return history
