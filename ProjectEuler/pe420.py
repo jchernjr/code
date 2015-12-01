@@ -46,7 +46,7 @@ def trace(m):
 #
 # Each matrix M should also remember which inputs made it, so each matrix will be associated with a list.
 # 
-# Thus, this will be a Dict[trace] --> Dict[Squared Matrix M] --> List of input Matrix/Matrices
+# Thus, this will be a Dict[trace] --> Dict[Squared Matrix M] --> set of input Matrix/Matrices
 def searchOneRound(n, history):
     # All input matrices are captured in this history for now.
     # Find the input matrices that created outputs at n-1.
@@ -74,7 +74,7 @@ def searchOneRound(n, history):
 
             # Then put it in the history (guarantees that every child matrix is captured somewhere)
             if tr not in history:
-                history[tr] = defaultdict(list)
+                history[tr] = defaultdict(set)
             history[tr][m].append(childMatrix)
 
 def initialHistory():
