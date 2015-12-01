@@ -32,7 +32,8 @@ def trace(m):
 # The key to this approach is that we'll cover everything eventually, without missing any gaps,
 # because we always go to "bigger" and "bigger" matrices (higher valued elements),
 # and because the trace of their squares never decrease:
-# A 2x2 matrix M=(a,b,c,d) has trace(M) = (a^2 + bc) + (bc + d^2), so an increase in any element increases the trace.
+# A 2x2 matrix M=(a,b,c,d) has trace(M) = (a^2 + bc) + (bc + d^2), so an increase in any element
+# necessarily increases the trace (if b and c are both positive).
 #
 # We'll keep track of all the squared matrices from this round, so that if we eventually
 # find that any of them can be constructed from more than 1 unique input, we'll detect them.
@@ -89,10 +90,12 @@ def generateOneRound(n, history):
             history[tr][m].add(childMatrix)
 
 def initialHistory():
-    # Map of trace 0 to the 0-squared matrix and its input.
-    zero = (0,0,0,0)
     history = defaultdict(dict)
-    history[0] = {zero: set([zero])}
+
+    # The smallest legal input matrix has all ones (must be a positive-integer matrix)
+    inputMatrix = (1,1,1,1)
+    m = square(inputMatrix)
+    history[trace(m)] = {m: set([inputMatrix])}
     return history
 
 
@@ -115,9 +118,13 @@ def countDoubleSquares(n, history):
 
 def searchUpToN(N):
     history = initialHistory()
-    for n in xrange(1, N+1):
+    lowestLevel = list(history.keys())[0]
+
+    count = 0
+    for n in xrange(lowestLevel+1, N+1):
         generateOneRound(n, history)
-        countDoubleSquares(n, history)
+        count += countDoubleSquares(n, history)
         #del history[n-1]
 
+    print "Found " + str(count)
     return history
