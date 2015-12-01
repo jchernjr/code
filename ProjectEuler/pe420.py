@@ -63,7 +63,7 @@ def generateOneRound(n, history):
     # Find the input matrices that created outputs at n-1.
     # Increment those matrices' elements, make squares from them, and add to the history.
     lastLevelResults = history[n-1]
-    print "Last level results (level " + str(n-1) + "): " + str(lastLevelResults)
+    #print "Last level results (level " + str(n-1) + "): " + str(lastLevelResults)
 
     def listExtractor(accum, nextListOfInputs):
         accum.extend(nextListOfInputs)
@@ -101,7 +101,8 @@ def initialHistory():
 
 def countDoubleSquares(n, history):
     """Sees how many matrices at level n (trace = n) are formed by multiple unique squares.
-    Should check this after generating matrices for level n, above."""
+    Should check this after generating matrices for level n, either from the initial condition
+    or iteratively from above."""
     count = 0
 
     thisLevelResults = history[n]
@@ -121,10 +122,9 @@ def searchUpToN(N):
     lowestLevel = list(history.keys())[0]
 
     count = 0
-    for n in xrange(lowestLevel+1, N+1):
-        generateOneRound(n, history)
+    for n in xrange(lowestLevel, N):
         count += countDoubleSquares(n, history)
-        #del history[n-1]
+        generateOneRound(n+1, history)
+        del history[n]
 
     print "Found " + str(count)
-    return history
