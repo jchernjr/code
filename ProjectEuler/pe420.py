@@ -106,13 +106,20 @@ def countDoubleSquares(n, history):
     count = 0
 
     thisLevelResults = history[n]
-    for (square, inputSet) in thisLevelResults.items():
-        if len(inputSet) >= 2:
-            count += 1
 
-            print "Matrix " + str(square) + " can be formed by: "
-            for inputMatrix in inputSet:
-                print "   " + str(inputMatrix) + "^2"
+    # Loop way, to print out results
+    #for (square, inputSet) in thisLevelResults.items():
+    #    if len(inputSet) >= 2:
+    #        count += 1
+
+            #print "Matrix " + str(square) + " can be formed by: "
+            #for inputMatrix in inputSet:
+            #    print "   " + str(inputMatrix) + "^2"
+
+    # Map-Reduce way, to be faster (just find all input sets with size >= 2)
+    def counter(count, inputSize):
+        return count if inputSize <= 1 else count + 1
+    count = reduce(counter, map(len, thisLevelResults.values()), 0)
 
     return count
 
@@ -126,5 +133,7 @@ def searchUpToN(N):
         count += countDoubleSquares(n, history)
         generateOneRound(n+1, history)
         del history[n]
+
+        print "Done with level " + str(n)
 
     print "Found " + str(count)
