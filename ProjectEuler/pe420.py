@@ -32,7 +32,7 @@ def squaresUpTo(value, existingSquares=EXISTING_SQUARES):
     If value exceeds the highest square in the list, the list will be automatically extended.
     """
     n = len(existingSquares) # 1^2, 2^2, 3^2, ..., n^2
-    neededN = int(sqrt(value))
+    neededN = int(sqrt(max(0, value)))
 
     if neededN > n:
         existingSquares.extend([i*i for i in xrange(n+1, neededN+1)])
