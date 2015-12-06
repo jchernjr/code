@@ -1,4 +1,5 @@
 from collections import defaultdict
+from math import sqrt
 
 # Project Euler #420
 # Find F(N), defined as
@@ -22,7 +23,7 @@ def trace(m):
     return a + d
 
 class squaresUpTo(object):
-    """Generator that yields squares from 1 up to, but not including, an upper limit."""
+    """Generator that yields squares from 1 up to, and including, an upper limit."""
     def __init__(self, max_val):
         self.max_val = max_val
         self.i = 1 # next number to be squared
@@ -32,11 +33,30 @@ class squaresUpTo(object):
 
     def next(self):
         val = self.i * self.i
-        if val < self.max_val:
+        if val <= self.max_val:
             self.i += 1
             return val
         else:
             raise StopIteration()
+
+
+class factorPairs(object):
+    """Generator that yields all non-repeating factor pairs for the given integer,
+    i.e. if there is a factorization (a, b) where a*b=n, it will not also emit (b, a)."""
+    def __init__(self, integer):
+        self.integer = integer
+        self.curr_factor = 0
+        self.max_factor = int(sqrt(integer))
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        while self.curr_factor <= self.max_factor:
+            self.curr_factor += 1
+            if self.integer % self.curr_factor == 0:
+                return (self.curr_factor, self.integer / self.curr_factor)
+        raise StopIteration()
 
 
 def generateSquaredMatricesWithTrace(tr):
@@ -48,6 +68,7 @@ def generateSquaredMatricesWithTrace(tr):
 
     Returns them in the format: {squaredMatrix: [list of input matrices]}
     """
+    results = defaultdict(list)
     # Strategy:
     # a^2 and d^2 terms must be perfect square integers, so loop over those first.
     #
@@ -55,9 +76,23 @@ def generateSquaredMatricesWithTrace(tr):
     # 2bc must be even; otherwise, this choice of (a, d) does not yield an integer matrix.
     # Finally, find all ways to factor bc into pairs of integer factors, and construct
     # input matrices from (a, b, c, d).
+    #
+    # Finally, remember that all values (a, b, c, d) must be positive, so we still require:
+    # a^2 + d^2 < tr, so that 2bc > 0.
+    for aSqr in squaresUpTo(tr - 3): # leaves at least 1 for dSqr, and 2 for 2bc
+        for dSqr in squaresUpTo(tr - aSqr - 2): # leaves at least 2 for 2bc
+            two_bc = tr - aSqr - dSqr
+            if two_bc % 2 == 0:
+                a, d = int(sqrt(aSqr)), int(sqrt(dSqr))
+                bc = two_bc / 2
 
+                for (b, c) in factorPairs(bc):
+                    for inputMatrix in [
+                            (a, b, c, d),
+                            (a, c, b, d)]:
+                        results[square(inputMatrix)].append(inputMatrix)
 
-
+    return results
 
 
 def countDoubleSquares(matrixMap):
