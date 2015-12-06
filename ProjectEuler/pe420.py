@@ -87,9 +87,12 @@ def generateSquaredMatricesWithTrace(tr):
                 bc = two_bc / 2
 
                 for (b, c) in factorPairs(bc):
-                    for inputMatrix in [
-                            (a, b, c, d),
-                            (a, c, b, d)]:
+                    if b == c:
+                        inputMatrices = [(a, b, c, d)]
+                    else:
+                        inputMatrices = [(a, b, c, d), (a, c, b, d)] # reverse b,c if unique
+
+                    for inputMatrix in inputMatrices:
                         results[square(inputMatrix)].append(inputMatrix)
 
     return results
