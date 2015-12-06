@@ -22,29 +22,22 @@ def trace(m):
     a, b, c, d = m
     return a + d
 
-EXISTING_SQUARES = [0, []]
+EXISTING_SQUARES = []
 EXISTING_FACTORS = {}
 
-def squaresUpTo(max_val, existingSquares=EXISTING_SQUARES):
-    """Returns a list of squares, up to and including the max_val.
+def squaresUpTo(value, existingSquares=EXISTING_SQUARES):
+    """Returns a list of squares, up to and including the value.
 
-    param: existingSquares is a [max_base, [list]] of squares we've previously found,
-    where max_base is the integer that was squared to form the last/highest entry in the list.
-    If max_val exceeds the highest square in the list, it will be automatically extended.
+    param: existingSquares is a [list] of squares we've previously found,
+    If value exceeds the highest square in the list, the list will be automatically extended.
     """
+    n = len(existingSquares) # 1^2, 2^2, 3^2, ..., n^2
+    neededN = int(sqrt(value))
 
-    maxBase = existingSquares[0]
-    squareList = existingSquares[1]
+    if neededN > n:
+        existingSquares.extend([i*i for i in xrange(n+1, neededN+1)])
 
-    maxExisting = maxBase * maxBase
-    if max_val > maxExisting:
-        nextBase = maxBase + 1
-        endBase = int(sqrt(max_val)) + 1 # generate a square that exceeds max_val to skip this check again
-
-        existingSquares[1].extend([i*i for i in xrange(nextBase, endBase + 1)])
-        existingSquares[0] = endBase
-
-    return [sqr for sqr in squareList if sqr <= max_val]
+    return existingSquares[:neededN]
 
 
 class factorPairs_Generator(object):
