@@ -45,7 +45,7 @@ class factorPairs(object):
     i.e. if there is a factorization (a, b) where a*b=n, it will not also emit (b, a)."""
     def __init__(self, integer):
         self.integer = integer
-        self.curr_factor = 0
+        self.curr_factor = 1
         self.max_factor = int(sqrt(integer))
 
     def __iter__(self):
@@ -53,9 +53,11 @@ class factorPairs(object):
 
     def next(self):
         while self.curr_factor <= self.max_factor:
+            foundNextPair = self.integer % self.curr_factor == 0
             self.curr_factor += 1
-            if self.integer % self.curr_factor == 0:
+            if foundNextPair:
                 return (self.curr_factor, self.integer / self.curr_factor)
+
         raise StopIteration()
 
 
@@ -121,6 +123,6 @@ def searchUpToN(N):
     for n in xrange(N):
         matrixMap = generateSquaredMatricesWithTrace(n)
         count += countDoubleSquares(matrixMap)
-        print "Done with level " + str(n)
+        print "Done with trace " + str(n)
 
     print "Found " + str(count)
