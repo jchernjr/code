@@ -22,25 +22,32 @@ def trace(m):
     a, b, c, d = m
     return a + d
 
-class squaresUpTo(object):
-    """Generator that yields squares from 1 up to, and including, an upper limit."""
-    def __init__(self, max_val):
-        self.max_val = max_val
-        self.i = 1 # next number to be squared
+EXISTING_SQUARES = [0, []]
+EXISTING_FACTORS = {}
 
-    def __iter__(self):
-        return self
+def squaresUpTo(max_val, existingSquares=EXISTING_SQUARES):
+    """Returns a list of squares, up to and including the max_val.
 
-    def next(self):
-        val = self.i * self.i
-        if val <= self.max_val:
-            self.i += 1
-            return val
-        else:
-            raise StopIteration()
+    param: existingSquares is a [max_base, [list]] of squares we've previously found,
+    where max_base is the integer that was squared to form the last/highest entry in the list.
+    If max_val exceeds the highest square in the list, it will be automatically extended.
+    """
+
+    maxBase = existingSquares[0]
+    squareList = existingSquares[1]
+
+    maxExisting = maxBase * maxBase
+    if max_val > maxExisting:
+        nextBase = maxBase + 1
+        endBase = int(sqrt(max_val)) + 1 # generate a square that exceeds max_val to skip this check again
+
+        existingSquares[1].extend([i*i for i in xrange(nextBase, endBase + 1)])
+        existingSquares[0] = endBase
+
+    return [sqr for sqr in squareList if sqr <= max_val]
 
 
-class factorPairs(object):
+class factorPairs_Generator(object):
     """Generator that yields all non-repeating factor pairs for the given integer,
     i.e. if there is a factorization (a, b) where a*b=n, it will not also emit (b, a)."""
     def __init__(self, value):
@@ -62,7 +69,16 @@ class factorPairs(object):
         raise StopIteration()
 
 
-def generateSquaredMatricesWithTrace(tr):
+def factorPairs(value, existingFactors=EXISTING_FACTORS):
+    """Returns a list of unique factor pairs for the given value, using a cache.
+    param: existingFactors is a dict of {value: [(a,b) list of tuples]}
+    """
+    if value not in existingFactors:
+        existingFactors[value] = [pair for pair in factorPairs_Generator(value)]
+    return existingFactors[value]
+
+
+def generateSquaredMatricesWithTrace(tr, existingSquares, existingFactors):
     """Generates all squared matrices (made by squaring a positive-integer matrix)
     that have the exact trace specified.
 
