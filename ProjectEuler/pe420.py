@@ -78,7 +78,7 @@ def factorPairs(value, existingFactors=EXISTING_FACTORS):
     return existingFactors[value]
 
 
-def generateSquaredMatricesWithTrace(tr, existingSquares, existingFactors):
+def generateSquaredMatricesWithTrace(tr):
     """Generates all squared matrices (made by squaring a positive-integer matrix)
     that have the exact trace specified.
 
@@ -128,9 +128,9 @@ def countDoubleSquares(matrixMap):
         if len(inputs) >= 2:
             count += 1
 
-            print "Matrix " + str(square) + " can be formed by: "
-            for inputMatrix in inputs:
-                print "   " + str(inputMatrix) + "^2"
+            #print "Matrix " + str(square) + " can be formed by: "
+            #for inputMatrix in inputs:
+            #    print "   " + str(inputMatrix) + "^2"
 
     return count
 
