@@ -43,20 +43,21 @@ class squaresUpTo(object):
 class factorPairs(object):
     """Generator that yields all non-repeating factor pairs for the given integer,
     i.e. if there is a factorization (a, b) where a*b=n, it will not also emit (b, a)."""
-    def __init__(self, integer):
-        self.integer = integer
-        self.curr_factor = 1
-        self.max_factor = int(sqrt(integer))
+    def __init__(self, value):
+        self.value = value
+        self.next_factor = 1
+        self.max_factor = int(sqrt(value))
 
     def __iter__(self):
         return self
 
     def next(self):
-        while self.curr_factor <= self.max_factor:
-            foundNextPair = self.integer % self.curr_factor == 0
-            self.curr_factor += 1
-            if foundNextPair:
-                return (self.curr_factor, self.integer / self.curr_factor)
+        while self.next_factor <= self.max_factor:
+            factor = self.next_factor
+            self.next_factor += 1
+
+            if (self.value % factor == 0):
+                return (factor, self.value / factor)
 
         raise StopIteration()
 
